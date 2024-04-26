@@ -5,7 +5,7 @@ resolution = true
 skip-lint = false
 
 [programs.devnet]
-bictory_test = "ECVESb2kpEyN3WoQU1ZvVt51SjBa2wUccZJ5PGJcoqHr"
+bictory_test = "C5Z6zKYG7RFezSuijQVEXexAbDJsb8jfVaxF7a6rP3Dj"
 
 [registry]
 url = "https://api.apr.dev"

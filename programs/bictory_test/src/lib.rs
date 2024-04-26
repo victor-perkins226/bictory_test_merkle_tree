@@ -1,5 +1,6 @@
 use anchor_lang::prelude::*;
-declare_id!("ECVESb2kpEyN3WoQU1ZvVt51SjBa2wUccZJ5PGJcoqHr");
+
+declare_id!("C5Z6zKYG7RFezSuijQVEXexAbDJsb8jfVaxF7a6rP3Dj");
 
 pub mod contexts;
 pub mod account;
@@ -16,24 +17,22 @@ use utils::*;
 pub mod bictory_test {
     use super::*;
 
-    pub fn add_to_whitelist(ctx: Context<AddToWhitelist>, new_merkle_root: [u8; 32]) -> Result<()> {
-
-        let state = &mut ctx.accounts.state;
-
+    pub fn add_to_whitelist(ctx: Context<AddToWhitelist>, new_address: [u8; 32]) -> Result<()> {
         // Ensure sender is admin
         require_eq!(ctx.accounts.admin.key, &ADMIN_KEY, ErrorCodes::NotAdmin);
-
-        state.merkle_root = new_merkle_root;
+        let hash = anchor_lang::solana_program::keccak::hash(&new_address).0;
+        msg!("hash {:?}", hash);
+        generate_new_root(&mut ctx.accounts.state, hash);
 
         Ok(())
     }
 
-    pub fn target(ctx: Context<Target>, proof: Vec<[u8; 32]>) -> Result<()> {
+    pub fn target(ctx: Context<Target>, proofs: Vec<[u8;32]>) -> Result<()> {
         let sender = ctx.accounts.sender.key();
         let root = ctx.accounts.state.merkle_root;
+        // let state = &ctx.accounts.state;
         let node = anchor_lang::solana_program::keccak::hash(sender.key().as_ref());
-
-        require!(verify(proof, root, node.0), ErrorCodes::NotWhiteList);
+        require!(verify(proofs.clone(), root, node.0), ErrorCodes::NotWhiteList);
         msg!(&format!("{} 👍 {}", WHITELIST_MSG, sender.key()));
 
         Ok(())

@@ -1,4 +1,4 @@
-import { PublicKey, getMerkleProof, getMerkleRoot } from '@metaplex-foundation/js';
+import { PublicKey, getMerkleProof, getMerkleRoot, getMerkleTree } from '@metaplex-foundation/js';
 import axios from 'axios';
 import { BACKEND_URL } from '../config';
 import { WalletContextState } from '@solana/wallet-adapter-react';
@@ -17,16 +17,16 @@ export const addWhiteList = async (newAddress: string, signature: string) => {
     return data;
 }
 
-export const getRoot = async (addresses: PublicKey[]) => {
+export const getRoot = (addresses: PublicKey[]) => {
     const whitelistedBuffer = addresses.map((address) =>
         address.toBuffer()
     );
 
-    const root = await getMerkleRoot(whitelistedBuffer);
+    const root = getMerkleRoot(whitelistedBuffer);
     return root
 }
 
-export const getProof = async (addresses: PublicKey[], leaf: PublicKey) => {
+export const getProof = (addresses: PublicKey[], leaf: PublicKey) => {
     const whitelistedBuffer = addresses.map((address) =>
         address.toBuffer()
     );
@@ -34,6 +34,25 @@ export const getProof = async (addresses: PublicKey[], leaf: PublicKey) => {
     const proof = getMerkleProof(whitelistedBuffer, leaf.toBuffer());
     return proof;
 }
+
+export const generate = (addresses: PublicKey[]) => {
+    const whitelistedBuffer = addresses.map((address) =>
+        address.toBuffer()
+    );
+    const merkleTree = getMerkleTree(whitelistedBuffer);
+
+    const decommitments = [];
+    const leafCount = merkleTree.getDepth() >>> 1;
+    console.log('leafCount', merkleTree.getLeafCount());
+    for (let i = leafCount + merkleTree.getLeafCount(); i > 1; i = i >>> 1) {
+      if (i & 1 || i === 2) {
+        decommitments.unshift(merkleTree.getLeaf(i - 1));
+      }
+    }
+  
+  
+    return decommitments.map(Buffer.from);
+};
 
 export const getSignedMessage = async (wallet: WalletContextState, message: string) => {
     try {

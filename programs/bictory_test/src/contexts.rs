@@ -1,5 +1,4 @@
 use anchor_lang::prelude::*;
-use std::mem::size_of;
 use crate::account::*;
 use crate::constants::*;
 
@@ -11,7 +10,7 @@ pub struct AddToWhitelist<'info> {
         ROOT_SEED.as_bytes()], 
         bump, 
         payer = admin, 
-        space = size_of::<State>() + 8
+        space =  32 + (32 + 1) * ENOUGH_LEVEL + 32 + 32 + 8
       )]
     pub state: Account<'info, State>,
     pub system_program: Program<'info, System>,

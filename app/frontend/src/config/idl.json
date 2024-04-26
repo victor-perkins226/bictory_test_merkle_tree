@@ -23,7 +23,7 @@
       ],
       "args": [
         {
-          "name": "newMerkleRoot",
+          "name": "newAddress",
           "type": {
             "array": [
               "u8",
@@ -49,7 +49,7 @@
       ],
       "args": [
         {
-          "name": "proof",
+          "name": "proofs",
           "type": {
             "vec": {
               "array": [
@@ -76,6 +76,52 @@
                 32
               ]
             }
+          },
+          {
+            "name": "minProofs",
+            "type": {
+              "vec": {
+                "defined": "Proof"
+              }
+            }
+          },
+          {
+            "name": "lastLeaf",
+            "type": {
+              "option": {
+                "array": [
+                  "u8",
+                  32
+                ]
+              }
+            }
+          },
+          {
+            "name": "leafCount",
+            "type": "u32"
+          }
+        ]
+      }
+    }
+  ],
+  "types": [
+    {
+      "name": "Proof",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "level",
+            "type": "u8"
           }
         ]
       }
@@ -92,5 +138,8 @@
       "name": "NotWhiteList",
       "msg": "You are not whitelist"
     }
-  ]
+  ],
+  "metadata": {
+    "address": "FqpXnkg4kPsXWgPsNapLTXDN8GHTr6RE5NbgenP7WxgJ"
+  }
 }
